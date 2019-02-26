@@ -12,6 +12,10 @@
       <h2 class="recommends-title">推荐歌单</h2>
       <ul class="recommends-list">
         <li class="recommends-item" v-for="recommend in recommends" :key="recommend.id">
+          <div class="play-count">
+            <icon name="earphone"></icon>
+            {{recommend.playCount | count}}
+          </div>
           <img v-lazy="recommend.picUrl" class="recommends-item-pic">
           <p class="recommends-item-text">{{recommend.name}}</p>
         </li>
@@ -65,6 +69,15 @@ export default {
       this.recommends = res.result;
     }
   },
+  filters: {
+    count(val) {
+      if (val < 10000) {
+        return val;
+      }
+
+      return `${Math.round(val / 10000)}万`;
+    }
+  },
   created() {
     this.getBanners();
     this.getRecommends();
@@ -95,14 +108,36 @@ export default {
       font-size: 0
 
       .recommends-item
+        position: relative
         width: calc(20% - 24px)
         display: inline-block
         margin: 0 30px 30px 0
         font-size: 14px
         vertical-align: top
+        cursor: pointer
 
         &:nth-child(5n)
           margin-right: 0
+
+        .play-count
+          absolute: right 10px top 10px
+          display: flex
+          color: #dbdbdb
+          align-items: center
+          font-size: $font-size-small
+          transition: all $transition-time
+
+          .icon-earphone
+            margin-right: 4px
+            size: 16px
+
+        &:hover
+          .play-count
+            color: $color-theme
+            transform: scale(1.1)
+
+            .icon-earphone
+              color: $color-theme
 
         &-pic
           width: 100%

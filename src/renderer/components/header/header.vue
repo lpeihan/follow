@@ -45,6 +45,7 @@ export default {
   height: 80px
   background: linear-gradient(90deg, $color-bg, $color-sub-bg)
   -webkit-app-region: drag
+  user-select: none
 
   &-icons
     flex: 1

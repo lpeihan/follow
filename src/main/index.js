@@ -23,7 +23,7 @@ function createWindow() {
     height: 720,
     minHeight: 720,
     useContentSize: true,
-    // titleBarStyle: 'hiddenInset',
+    titleBarStyle: 'hiddenInset',
   });
 
   mainWindow.loadURL(winURL);
