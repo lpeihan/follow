@@ -28,6 +28,7 @@
 import { swiper, swiperSlide } from 'vue-awesome-swiper';
 import 'swiper/dist/css/swiper.css';
 import { getBanners, getRecommends } from '@/api/home';
+import { refreshMixins } from '@/services/mixins';
 
 export default {
   name: 'recommends',
@@ -35,6 +36,7 @@ export default {
     swiper,
     swiperSlide
   },
+  mixins: [refreshMixins],
   data() {
     return {
       banners: [],
@@ -60,13 +62,23 @@ export default {
     };
   },
   methods: {
+    query() {
+      this.$route.name === 'recommends' && Promise.all([
+        this.getBanners(),
+        this.getRecommends()
+      ]);
+    },
     async getBanners() {
       const res = await getBanners();
       this.banners = res.banners;
+
+      return this.banners;
     },
     async getRecommends() {
       const res = await getRecommends();
       this.recommends = res.result;
+
+      return this.recommends;
     }
   },
   filters: {
@@ -79,8 +91,7 @@ export default {
     }
   },
   created() {
-    this.getBanners();
-    this.getRecommends();
+    this.query();
   }
 };
 </script>

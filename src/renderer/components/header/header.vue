@@ -2,7 +2,7 @@
   <header class="header" @dblclick="handleDbclick">
     <div class="header-icons">
       <icon name="music" @click="$router.push('/')"></icon>
-      <icon name="refresh" @click="$router.push('/')"></icon>
+      <icon name="refresh" @click="refresh"></icon>
       <icon name="back" @click="$router.go(-1)"></icon>
       <icon name="right" @click="$router.go(1)"></icon>
     </div>
@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import eventBus from '@/services/event-bus';
+
 export default {
   data() {
     return {
@@ -30,6 +32,9 @@ export default {
   methods: {
     handleDbclick() {
       this.$electron.ipcRenderer.send('max');
+    },
+    refresh() {
+      eventBus.$emit('refresh');
     }
   }
 };
@@ -40,7 +45,7 @@ export default {
   fixed: top left 50px right 50px
   z-index: 100
   display: flex
-  padding-top: 10px
+  padding-top: 20px
   align-items: center
   height: 80px
   background: linear-gradient(90deg, $color-bg, $color-sub-bg)
