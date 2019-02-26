@@ -1,6 +1,6 @@
 <template>
   <div class="page-recommends">
-    <swiper :options="swiperOption" v-if="banners.length">
+    <swiper :options="swiperOption" v-if="banners.length && recommends.length">
       <swiper-slide v-for="banner in banners" :key="banner.picUrl">
         <img :src="banner.picUrl" width="100%">
       </swiper-slide>
@@ -29,6 +29,7 @@ import { swiper, swiperSlide } from 'vue-awesome-swiper';
 import 'swiper/dist/css/swiper.css';
 import { getBanners, getRecommends } from '@/api/home';
 import { refreshMixins } from '@/services/mixins';
+import loading from '@/components/loading';
 
 export default {
   name: 'recommends',
@@ -62,23 +63,28 @@ export default {
     };
   },
   methods: {
-    query() {
-      this.$route.name === 'recommends' && Promise.all([
-        this.getBanners(),
-        this.getRecommends()
-      ]);
+    async query() {
+      if (this.$route.name === 'recommends') {
+        loading.open();
+
+        const res = await Promise.all([
+          this.getBanners(),
+          this.getRecommends()
+        ]);
+
+        setTimeout(() => {
+          [this.banners, this.recommends] = res;
+          loading.close();
+        }, 500);
+      }
     },
     async getBanners() {
       const res = await getBanners();
-      this.banners = res.banners;
-
-      return this.banners;
+      return res.banners;
     },
     async getRecommends() {
       const res = await getRecommends();
-      this.recommends = res.result;
-
-      return this.recommends;
+      return res.result;
     }
   },
   filters: {
