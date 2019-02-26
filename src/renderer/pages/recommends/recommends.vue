@@ -1,0 +1,114 @@
+<template>
+  <div class="page-recommends">
+    <swiper :options="swiperOption" v-if="banners.length">
+      <swiper-slide v-for="banner in banners" :key="banner.picUrl">
+        <img :src="banner.picUrl" width="100%">
+      </swiper-slide>
+
+      <div class="swiper-pagination" slot="pagination"></div>
+    </swiper>
+
+    <div class="recommends" v-if="recommends.length">
+      <h2 class="recommends-title">推荐歌单</h2>
+      <ul class="recommends-list">
+        <li class="recommends-item" v-for="recommend in recommends" :key="recommend.id">
+          <img v-lazy="recommend.picUrl" class="recommends-item-pic">
+          <p class="recommends-item-text">{{recommend.name}}</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script>
+import { swiper, swiperSlide } from 'vue-awesome-swiper';
+import 'swiper/dist/css/swiper.css';
+import { getBanners, getRecommends } from '@/api/home';
+
+export default {
+  name: 'recommends',
+  components: {
+    swiper,
+    swiperSlide
+  },
+  data() {
+    return {
+      banners: [],
+      recommends: [],
+      swiperOption: {
+        loop: true,
+        autoplay: true,
+        effect: 'coverflow',
+        grabCursor: true,
+        centeredSlides: true,
+        slidesPerView: 'auto',
+        coverflowEffect: {
+          rotate: 50,
+          stretch: 0,
+          depth: 100,
+          modifier: 1,
+          slideShadows: true
+        },
+        pagination: {
+          el: '.swiper-pagination'
+        }
+      }
+    };
+  },
+  methods: {
+    async getBanners() {
+      const res = await getBanners();
+      this.banners = res.banners;
+    },
+    async getRecommends() {
+      const res = await getRecommends();
+      this.recommends = res.result;
+    }
+  },
+  created() {
+    this.getBanners();
+    this.getRecommends();
+  }
+};
+</script>
+
+<style lang="stylus" scoped>
+.page-recommends
+  padding: 20px 0
+
+  .swiper-slide
+    background-position: center
+    background-size: cover
+    width: 480px
+
+  >>>.swiper-pagination
+    &-bullet-active
+      background: #f6325b
+
+  .recommends
+    &-title
+      font-size: 18px
+      margin-top: 30px
+
+    &-list
+      margin-top: 25px
+      font-size: 0
+
+      .recommends-item
+        width: calc(20% - 24px)
+        display: inline-block
+        margin: 0 30px 30px 0
+        font-size: 14px
+        vertical-align: top
+
+        &:nth-child(5n)
+          margin-right: 0
+
+        &-pic
+          width: 100%
+          border-radius: 8px
+
+        &-text
+          color: #ebebeb
+          margin-top: 10px
+</style>
