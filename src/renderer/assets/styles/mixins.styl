@@ -7,16 +7,22 @@ flex-version = flex
 support-for-ie = false
 vendor-prefixes = official
 
-@import "~nib/index"
-@import "border.styl"
+@import '~nib/index'
+@import 'border.styl'
 
 btn-active()
   position: relative
+
   &::before
     content: ''
     absolute: top left right bottom
     background: $black
-    opacity: 0 
+    opacity: 0
 
   &:active::before
     opacity: 0.1
+
+text()
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap

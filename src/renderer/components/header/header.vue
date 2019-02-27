@@ -1,6 +1,6 @@
 <template>
-  <header class="header" @dblclick="handleDbclick">
-    <div class="header-bar"></div>
+  <header class="header">
+    <div class="header-bar" @dblclick="handleDbclick"></div>
 
     <div class="header-content">
       <div class="icons">

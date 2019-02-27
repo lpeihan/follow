@@ -11,3 +11,10 @@ export function getRecommends() {
     url: '/personalized'
   });
 }
+
+export function getPlaylist(id) {
+  return request({
+    url: '/playlist/detail',
+    params: { id }
+  });
+}

@@ -11,7 +11,12 @@
     <div class="recommends" v-if="recommends.length">
       <h2 class="recommends-title">推荐歌单</h2>
       <ul class="recommends-list">
-        <li class="recommends-item" v-for="recommend in recommends" :key="recommend.id">
+        <li
+          class="recommends-item"
+          v-for="recommend in recommends"
+          :key="recommend.id"
+          @click="goPlaylist(recommend)"
+        >
           <div class="play-count">
             <icon name="earphone"></icon>
             {{recommend.playCount | count}}
@@ -27,7 +32,7 @@
 <script>
 import { swiper, swiperSlide } from 'vue-awesome-swiper';
 import 'swiper/dist/css/swiper.css';
-import { getBanners, getRecommends } from '@/api/home';
+import { getBanners, getRecommends } from '@/api/recommends';
 import { refreshMixins } from '@/services/mixins';
 import loading from '@/components/loading';
 
@@ -85,6 +90,9 @@ export default {
     async getRecommends() {
       const res = await getRecommends();
       return res.result;
+    },
+    goPlaylist(recommend) {
+      this.$router.push({ path: `/playlist/${recommend.id}` });
     }
   },
   filters: {

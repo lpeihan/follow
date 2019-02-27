@@ -30,6 +30,7 @@ module.exports = {
     'no-empty': 0,
     'import/no-extraneous-dependencies': 0,
     'import/prefer-default-export': 0,
+    'object-curly-newline': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }

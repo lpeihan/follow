@@ -31,6 +31,11 @@ export default new Router({
       component: require('@/pages/about/about').default,
     },
     {
+      path: '/playlist/:id',
+      name: 'playlist',
+      component: require('@/pages/playlist/playlist').default,
+    },
+    {
       path: '*',
       redirect: '/',
     },
