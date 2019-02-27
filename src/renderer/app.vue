@@ -19,8 +19,11 @@ export default {
 };
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus">
 #app
   padding: 80px 50px 0
+
+  .router-link-active
+    color: $color-theme
 </style>
 

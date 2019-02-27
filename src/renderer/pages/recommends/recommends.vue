@@ -92,7 +92,7 @@ export default {
       return res.result;
     },
     goPlaylist(recommend) {
-      this.$router.push({ path: `/playlist/${recommend.id}` });
+      this.$router.push({ path: `/recommends/${recommend.id}` });
     }
   },
   filters: {

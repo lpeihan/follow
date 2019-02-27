@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       navbars: [
-        { label: '推荐', to: '/' },
+        { label: '推荐', to: '/recommends' },
         { label: '排行榜', to: '/ranking' },
         { label: '搜索', to: '/search' },
         { label: '我的', to: '/my' },
