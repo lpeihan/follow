@@ -1,8 +1,9 @@
 class Song {
-  constructor({ id, singer, name, album }) {
+  constructor({ id, singer, name, album, pic }) {
     this.id = id;
     this.singer = singer;
     this.name = name;
+    this.pic = pic;
     this.album = album;
   }
 }
@@ -19,6 +20,7 @@ export function createSong(song) {
     id: song.id,
     name: song.name,
     singer: getSingerName(song.ar),
-    album: song.al.name
+    album: song.al.name,
+    pic: song.al.picUrl
   });
 }

@@ -5,16 +5,20 @@
     <keep-alive :include="['recommends', 'ranking']">
       <router-view></router-view>
     </keep-alive>
+
+    <player></player>
   </div>
 </template>
 
 <script>
 import VHeader from '@/components/header/header';
+import Player from '@/pages/player/player';
 
 export default {
   name: 'app',
   components: {
-    VHeader
+    VHeader,
+    Player
   }
 };
 </script>

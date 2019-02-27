@@ -1,10 +1,10 @@
 <template>
   <div class="playlist">
     <div class="playlist-info">
-      <img :src="playlist.coverImgUrl" class="info-corver">
+      <img :src="playlistData.coverImgUrl" class="info-corver">
 
-      <div class="info-name">{{playlist.name}}</div>
-      <div class="info-desc">{{playlist.description}}</div>
+      <div class="info-name">{{playlistData.name}}</div>
+      <div class="info-desc">{{playlistData.description}}</div>
     </div>
     <div class="playlist-songs">
       <ul class="songs-list">
@@ -14,7 +14,7 @@
           <div class="singer-name">歌手</div>
           <div class="album-name">专辑</div>
         </li>
-        <li class="songs-item" v-for="(song, index) in songs" :key="index">
+        <li class="songs-item" v-for="(song, index) in songs" :key="index" @click="selectSong(index)">
           <div class="song-left">
             <span class="song-index">{{index + 1}}</span>
             <div class="song-love">
@@ -34,25 +34,41 @@
 import { getPlaylist } from '@/api/recommends';
 import { createSong } from '@/services/song';
 import loading from '@/components/loading';
+import { refreshMixins } from '@/services/mixins';
+import { mapMutations, mapGetters } from 'vuex';
 
 export default {
   data() {
     return {
-      playlist: {},
+      playlistData: {},
       songs: []
     };
   },
+  mixins: [refreshMixins],
+  computed: {
+    ...mapGetters('song', ['currentSong'])
+  },
   methods: {
+    query() {
+      this.getPlaylist(this.$route.params.id);
+    },
     async getPlaylist(id) {
       loading.open();
       const res = await getPlaylist(id);
       loading.close();
-      this.playlist = res.playlist;
+      this.playlistData = res.playlist;
       this.songs = res.playlist.tracks.map(song => createSong(song));
+    },
+    ...mapMutations('song', ['SET_PLAYLIST', 'SET_CURRENT_INDEX']),
+    selectSong(index) {
+      this.SET_PLAYLIST(this.songs);
+      this.SET_CURRENT_INDEX(index);
+
+      console.log(this.currentSong);
     }
   },
   created() {
-    this.getPlaylist(this.$route.params.id);
+    this.query();
   }
 };
 </script>
@@ -65,14 +81,14 @@ export default {
   &-info
     fixed: top 100px left 50px bottom 100px
     padding-right: 30px
-    width: 230px
+    width: 240px
     display: flex
     flex-direction: column
     border-right-1px(hsla(0, 0%, 100%, 0.062))
 
     .info-corver
       width: 100%
-      border-radius: 10px
+      border-radius: 5px
 
     .info-name
       font-size: $font-size-large
@@ -81,12 +97,11 @@ export default {
     .info-desc
       flex: 1
       color: $color-text-l
-      font-size: 13px
       line-height: 22px
       overflow: auto
 
   &-songs
-    margin: 0 50px 0 260px
+    margin: 0 50px 0 270px
 
     .songs-item
       padding: 12px 0
