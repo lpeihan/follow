@@ -29,6 +29,7 @@ export default {
     handleMousedown(e) {
       this.draging = true;
       this.offsetX = e.clientX - this.x;
+      this.$emit('update', this.offsetX / this.width);
     },
     handleMouseup() {
       this.draging = false;
@@ -47,7 +48,7 @@ export default {
         offsetX = 0;
       }
 
-      this.$emit('update', Math.round(100 * this.offsetX / this.width));
+      this.$emit('update', this.offsetX / this.width);
 
       this.offsetX = offsetX;
     }

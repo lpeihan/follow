@@ -88,8 +88,10 @@ export default {
     togglePlay() {
       this.SET_PLAYING(!this.playing);
     },
-    updateProgress(val) {
-      console.log(val);
+    updateProgress(percent) {
+      this.$refs.audio.currentTime = percent * this.duration;
+
+      !this.playing && this.togglePlay();
     },
     updateTime(e) {
       this.currentTime = e.target.currentTime;
