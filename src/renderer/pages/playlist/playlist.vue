@@ -35,7 +35,7 @@ import { getPlaylist } from '@/api/recommends';
 import { createSong } from '@/services/song';
 import loading from '@/components/loading';
 import { refreshMixins } from '@/services/mixins';
-import { mapMutations, mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   data() {
@@ -49,6 +49,7 @@ export default {
     ...mapGetters('song', ['currentSong'])
   },
   methods: {
+    ...mapActions('song', ['selectPlay']),
     query() {
       this.getPlaylist(this.$route.params.id);
     },
@@ -59,12 +60,8 @@ export default {
       this.playlistData = res.playlist;
       this.songs = res.playlist.tracks.map(song => createSong(song));
     },
-    ...mapMutations('song', ['SET_PLAYLIST', 'SET_CURRENT_INDEX']),
     selectSong(index) {
-      this.SET_PLAYLIST(this.songs);
-      this.SET_CURRENT_INDEX(index);
-
-      console.log(this.currentSong);
+      this.selectPlay({ index, songs: this.songs });
     }
   },
   created() {
