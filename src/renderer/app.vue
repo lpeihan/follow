@@ -3,7 +3,7 @@
     <v-header></v-header>
 
     <keep-alive :include="['recommends', 'ranking']">
-      <router-view></router-view>
+      <router-view class="child-view"></router-view>
     </keep-alive>
 
     <player></player>

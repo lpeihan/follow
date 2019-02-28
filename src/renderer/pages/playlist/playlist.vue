@@ -6,27 +6,8 @@
       <div class="info-name">{{playlistData.name}}</div>
       <div class="info-desc">{{playlistData.description}}</div>
     </div>
-    <div class="playlist-songs">
-      <ul class="songs-list">
-        <li class="songs-item">
-          <div class="song-left"></div>
-          <div class="song-name">歌曲名</div>
-          <div class="singer-name">歌手</div>
-          <div class="album-name">专辑</div>
-        </li>
-        <li class="songs-item" v-for="(song, index) in songs" :key="index" @click="selectSong(index)">
-          <div class="song-left">
-            <span class="song-index">{{index + 1}}</span>
-            <div class="song-love">
-              <icon name="love"></icon>
-            </div>
-          </div>
-          <div class="song-name">{{song.name}}</div>
-          <div class="singer-name">{{song.singer}}</div>
-          <div class="album-name">{{song.album}}</div>
-        </li>
-      </ul>
-    </div>
+
+    <songlist :songs="songs" @select="selectSong"></songlist>
   </div>
 </template>
 
@@ -36,8 +17,12 @@ import { createSong } from '@/services/song';
 import loading from '@/components/loading';
 import { refreshMixins } from '@/services/mixins';
 import { mapGetters, mapActions } from 'vuex';
+import Songlist from './songlist';
 
 export default {
+  components: {
+    Songlist
+  },
   data() {
     return {
       playlistData: {},
@@ -96,54 +81,7 @@ export default {
       color: $color-text-l
       line-height: 22px
       overflow: auto
-
-  &-songs
+  
+  .songlist
     margin: 0 50px 0 270px
-
-    .songs-item
-      padding: 12px 0
-      position: relative
-      border-bottom-1px(hsla(0, 0%, 100%, 0.062))
-      display: flex
-
-      &:hover
-        background: hsla(0, 0%, 100%, 0.07)
-
-      .song-left
-        width: 100px
-        display: flex
-
-        .song-index
-          width: 30px
-          text-align: center
-
-        .song-love
-          flex: 1
-          padding-right: 10px
-          text-align: center
-
-          .icon-love
-            color: $color-theme
-
-      .song-name
-      .singer-name
-      .album-name
-        flex: 1
-        font-size: $font-size-base
-        padding-right: 15px
-        text-overflow()
-        cursor: pointer
-
-      .singer-name
-      .album-name
-        color: $color-text-l
-
-      &:first-child
-        background: hsla(0, 0%, 100%, 0.07)
-
-        .song-name
-        .singer-name
-        .album-name
-          color: $white
-          font-size: $font-size-large
 </style>

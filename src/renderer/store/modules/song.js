@@ -12,7 +12,7 @@ const getters = {
   playlist: state => state.playlist,
   currentIndex: state => state.currentIndex,
   playing: state => state.playing,
-  currentSong: state => state.playlist[state.currentIndex] || {}
+  currentSong: state => state.playlist[state.currentIndex] || {},
 };
 
 const mutations = {

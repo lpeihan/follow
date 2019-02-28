@@ -13,7 +13,7 @@
         <div class="song-info">
           <span class="song-name">{{currentSong.name}}</span>
           <span class="song-singer">{{currentSong.singer}}</span>
-
+          
           <span class="song-time">{{currentTime | time}} / {{duration | time}}</span>
         </div>
 
@@ -34,8 +34,7 @@
       </div>
     </div>
 
-    <audio ref="audio" :src="url" autoplay @timeupdate="updateTime" @ended="ended">
-    </audio>
+    <audio ref="audio" :src="url" autoplay @timeupdate="updateTime" @ended="ended"></audio>
   </div>
 </template>
 
@@ -45,6 +44,7 @@ import { getSong } from '@/api/song';
 import ProgressBar from '@/components/progress/progress';
 import { leftpad } from '@/utils';
 import Storage from '@/utils/storage';
+import db from '@/utils/db';
 
 export default {
   components: {
@@ -68,7 +68,6 @@ export default {
     ...mapMutations('song', ['SET_CURRENT_INDEX', 'SET_PLAYING']),
     async getSong(id) {
       this.url = (await getSong(id)).data[0].url;
-
 
       const timer = setInterval(() => {
         if (this.duration) {
@@ -128,6 +127,18 @@ export default {
         return;
       }
 
+      db.play.update({ id: newVal.id }, { $set: { listen_time: Date.now() } }, (err, data) => {
+        if (data === 0) {
+          const time = Date.now();
+          db.play.insert(Object.assign(newVal, {
+            create_time: time, listen_time: time
+          }), (err, res) => {
+            console.log(res);
+          });
+        }
+      });
+
+
       await this.getSong(newVal.id);
     },
     playing(val) {
@@ -176,6 +187,7 @@ export default {
     align-items: center
     flex: 1
     padding-bottom: 15px
+
     .pic
       width: 68px
       border-radius: 5px
@@ -183,25 +195,28 @@ export default {
     .progress
       flex: 1
       padding-left: 20px
+
       .song-info
         font-size: 13px
         margin-bottom: 15px
+
         .song-singer
           color: $color-text-l
+
         .song-time
           float: right
           color: $color-text-l
-  
+
   &-right
     width: 120px
-    padding-left:20px
+    padding-left: 20px
     padding-bottom: 15px
 
     .icons
       display: flex
       justify-content: space-between
       margin-bottom: 15px
-    
+
     .volume-progress
       display: flex
       align-items: center
