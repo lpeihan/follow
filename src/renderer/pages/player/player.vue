@@ -30,11 +30,11 @@
 
       <div class="volume-progress">
         <icon name="volume"></icon>
-        <progress-bar></progress-bar>
+        <progress-bar @update="changeVolume" :percent="initialVolume"></progress-bar>
       </div>
     </div>
 
-    <audio ref="audio" :src="url" autoplay @timeupdate="updateTime">
+    <audio ref="audio" :src="url" autoplay @timeupdate="updateTime" @ended="ended">
     </audio>
   </div>
 </template>
@@ -44,6 +44,7 @@ import { mapGetters, mapMutations } from 'vuex';
 import { getSong } from '@/api/song';
 import ProgressBar from '@/components/progress/progress';
 import { leftpad } from '@/utils';
+import Storage from '@/utils/storage';
 
 export default {
   components: {
@@ -53,7 +54,8 @@ export default {
     return {
       url: '',
       currentTime: 0,
-      duration: 0
+      duration: 0,
+      initialVolume: Storage.getItem('Volume') || 1
     };
   },
   computed: {
@@ -66,6 +68,16 @@ export default {
     ...mapMutations('song', ['SET_CURRENT_INDEX', 'SET_PLAYING']),
     async getSong(id) {
       this.url = (await getSong(id)).data[0].url;
+
+
+      const timer = setInterval(() => {
+        if (this.duration) {
+          clearInterval(timer);
+          return;
+        }
+
+        this.duration = this.$refs.audio.duration;
+      }, 300);
     },
     prev() {
       let index = this.currentIndex - 1;
@@ -96,6 +108,13 @@ export default {
     updateTime(e) {
       this.currentTime = e.target.currentTime;
     },
+    ended() {
+      this.next();
+    },
+    changeVolume(percent) {
+      this.$refs.audio.volume = percent;
+      Storage.setItem('Volume', percent);
+    }
   },
   filters: {
     time(time) {
@@ -110,18 +129,10 @@ export default {
       }
 
       await this.getSong(newVal.id);
-
-      const timer = setInterval(() => {
-        if (this.duration) {
-          clearInterval(timer);
-          return;
-        }
-
-        this.duration = this.$refs.audio.duration;
-      }, 300);
     },
     playing(val) {
       if (!this.url) {
+        this.getSong(this.currentSong.id);
         return;
       }
 
@@ -129,6 +140,9 @@ export default {
         val ? this.$refs.audio.play() : this.$refs.audio.pause();
       });
     }
+  },
+  mounted() {
+    this.SET_PLAYING(false);
   }
 };
 </script>

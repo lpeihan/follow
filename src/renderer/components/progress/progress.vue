@@ -51,6 +51,10 @@ export default {
       this.$emit('update', this.offsetX / this.width);
 
       this.offsetX = offsetX;
+    },
+    resize() {
+      this.width = this.$el.clientWidth;
+      this.x = this.$el.getBoundingClientRect().x;
     }
   },
   watch: {
@@ -63,12 +67,17 @@ export default {
   mounted() {
     window.addEventListener('mouseup', this.handleMouseup);
     window.addEventListener('mousemove', this.handleMousemove);
-    this.width = this.$el.clientWidth;
-    this.x = this.$el.getBoundingClientRect().x;
+    window.addEventListener('resize', this.resize);
+    this.resize();
+
+    if (this.percent) {
+      this.offsetX = this.percent * this.width;
+    }
   },
   beforeDestroy() {
     window.removeEventListener('mouseup', this.handleMouseup);
     window.removeEventListener('mousemove', this.handleMousemove);
+    window.removeEventListener('resize', this.resize);
   }
 };
 </script>
