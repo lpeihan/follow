@@ -23,7 +23,7 @@
 
     <div class="player-right">
       <div class="icons">
-        <icon name="love"></icon>
+        <icon :name="isLove ? 'love' : 'unlove'" @click="love"></icon>
         <icon name="repeat"></icon>
         <icon name="menu"></icon>
       </div>
@@ -55,6 +55,7 @@ export default {
       url: '',
       currentTime: 0,
       duration: 0,
+      isLove: false,
       initialVolume: Storage.getItem('Volume') || 1
     };
   },
@@ -113,6 +114,27 @@ export default {
     changeVolume(percent) {
       this.$refs.audio.volume = percent;
       Storage.setItem('Volume', percent);
+    },
+    love() {
+      if (this.isLove) {
+        db.love.remove({ id: this.currentSong.id }, () => {
+          this.isLove = false;
+        });
+      } else {
+        db.love.insert(
+          Object.assign(this.currentSong, { create_time: Date.now() }),
+          (err, data) => {
+            if (data) {
+              this.isLove = true;
+            }
+          }
+        );
+      }
+    },
+    checkIsLove() {
+      db.love.findOne({ id: this.currentSong.id }, (err, data) => {
+        this.isLove = Boolean(data);
+      });
     }
   },
   filters: {
@@ -138,6 +160,7 @@ export default {
         }
       });
 
+      this.checkIsLove();
 
       await this.getSong(newVal.id);
     },
@@ -154,6 +177,7 @@ export default {
   },
   mounted() {
     this.SET_PLAYING(false);
+    this.checkIsLove();
   }
 };
 </script>
@@ -216,6 +240,10 @@ export default {
       display: flex
       justify-content: space-between
       margin-bottom: 15px
+      cursor: pointer
+
+      .icon-love
+        color: $color-theme
 
     .volume-progress
       display: flex

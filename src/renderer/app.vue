@@ -2,7 +2,7 @@
   <div id="app">
     <v-header></v-header>
 
-    <keep-alive :include="['recommends', 'ranking']">
+    <keep-alive :include="['recommends', 'ranking', 'my']">
       <router-view class="child-view"></router-view>
     </keep-alive>
 

@@ -9,7 +9,7 @@
     <li class="songlist-item" v-for="(song, index) in songs" :key="index" @click="select(index)">
       <div class="item-left">
         <span class="song-index">{{index + 1}}</span>
-        <icon name="love"></icon>
+        <!-- <icon name="love"></icon> -->
       </div>
 
       <div class="song-name">{{song.name}}</div>
@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   props: {
     songs: {
@@ -28,9 +30,11 @@ export default {
     }
   },
   methods: {
+    ...mapActions('song', ['selectPlay']),
     select(index) {
       this.$emit('select', index);
-    }
+      this.selectPlay({ index, songs: this.songs });
+    },
   }
 };
 </script>
@@ -49,11 +53,12 @@ export default {
 
     .item-left
       display: flex
-      width: 98px
+      // width: 98px
+      width: 60px
 
       .song-index
-        width: 30px
-        text-align: center
+        width: 60px
+        padding-left: 10px
       
       .icon-love
         margin: 0 30px 0 20px

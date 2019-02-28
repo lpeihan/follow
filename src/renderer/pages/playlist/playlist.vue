@@ -7,7 +7,7 @@
       <div class="info-desc">{{playlistData.description}}</div>
     </div>
 
-    <songlist :songs="songs" @select="selectSong"></songlist>
+    <songlist :songs="songs"></songlist>
   </div>
 </template>
 
@@ -16,7 +16,7 @@ import { getPlaylist } from '@/api/recommends';
 import { createSong } from '@/services/song';
 import loading from '@/components/loading';
 import { refreshMixins } from '@/services/mixins';
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 import Songlist from './songlist';
 
 export default {
@@ -34,7 +34,6 @@ export default {
     ...mapGetters('song', ['currentSong'])
   },
   methods: {
-    ...mapActions('song', ['selectPlay']),
     query() {
       this.getPlaylist(this.$route.params.id);
     },
@@ -44,9 +43,6 @@ export default {
       loading.close();
       this.playlistData = res.playlist;
       this.songs = res.playlist.tracks.map(song => createSong(song));
-    },
-    selectSong(index) {
-      this.selectPlay({ index, songs: this.songs });
     }
   },
   created() {
