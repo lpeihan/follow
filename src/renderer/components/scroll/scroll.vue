@@ -32,7 +32,8 @@ export default {
       this.scroll = new BScroll(this.$el, {
         probeType: this.probeType,
         click: true,
-        scrollbar: true
+        scrollbar: true,
+        mouseWheel: true,
       });
       if (this.listenScroll) {
         const that = this;

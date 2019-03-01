@@ -30,7 +30,7 @@
           <div class="header-info">
             <h3 class="name">{{currentMenu.name}}</h3>
             <div class="song-count">
-              共{{plays.length}}首
+              共{{loves.length}}首
             </div>
           </div>
         </div>

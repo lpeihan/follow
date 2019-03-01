@@ -1,8 +1,8 @@
 <template>
-  <div id="app">
+  <div class="app">
     <v-header></v-header>
 
-    <keep-alive :include="['recommends', 'ranking', 'my']">
+    <keep-alive :include="['recommends', 'ranking', 'my', 'search']">
       <router-view class="child-view"></router-view>
     </keep-alive>
 
@@ -24,7 +24,7 @@ export default {
 </script>
 
 <style lang="stylus">
-#app
+.app
   height: 100%
   flex-direction: column
 

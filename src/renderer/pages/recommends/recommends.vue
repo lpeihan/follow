@@ -112,7 +112,6 @@ export default {
 
 <style lang="stylus" scoped>
 .page-recommends
-  padding: 20px 0
 
   .swiper-slide
     background-position: center

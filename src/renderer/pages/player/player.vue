@@ -359,9 +359,10 @@ export default {
       flex: 1
       justify-content: center
       align-items: center
+      padding: 80px 20px 0 0
 
       .lyric-box
-        size: 320px 360px
+        size: 360px 360px
         text-align: center
         overflow: hidden
         position: relative
