@@ -45,6 +45,7 @@ import ProgressBar from '@/components/progress/progress';
 import { leftpad } from '@/utils';
 import Storage from '@/utils/storage';
 import db from '@/utils/db';
+import eventBus from '@/services/event-bus';
 
 export default {
   components: {
@@ -119,6 +120,7 @@ export default {
       if (this.isLove) {
         db.love.remove({ id: this.currentSong.id }, () => {
           this.isLove = false;
+          eventBus.$emit('love');
         });
       } else {
         db.love.insert(
@@ -126,6 +128,7 @@ export default {
           (err, data) => {
             if (data) {
               this.isLove = true;
+              eventBus.$emit('love');
             }
           }
         );
@@ -148,6 +151,10 @@ export default {
       if (newVal.id === oldVal.id) {
         return;
       }
+
+      this.duration = 0;
+      this.currentTime = 0;
+      this.url = '';
 
       db.play.update({ id: newVal.id }, { $set: { listen_time: Date.now() } }, (err, data) => {
         if (data === 0) {
@@ -185,13 +192,11 @@ export default {
 
 <style lang="stylus" scoped>
 .player
-  fixed: bottom left right
   height: 100px
   display: flex
   background: linear-gradient(90deg, $color-bg, $color-sub-bg)
   align-items: center
   padding: 0 50px
-
   &-ctrl
     display: flex
     align-items: center

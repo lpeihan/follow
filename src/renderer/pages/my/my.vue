@@ -5,15 +5,31 @@
         class="menu-item"
         v-for="menu in menus"
         :key="menu.id"
-        :class="{ 'active': currentMenu === menu.id }"
-      >{{menu.name}}</div>
+        @click="select(menu)"
+        :class="{ 'active': currentMenu.id === menu.id }"
+      ><icon :name="menu.icon"></icon>{{menu.name}}</div>
     </div>
 
     <div class="my-content">
-      <div class="my-content-header">
-        <img src="http://p2.music.126.net/64JozXeLm7ErtXpwGrwwEw==/109951162811190850.jpg">
-      </div>
-      <songlist :songs="plays"></songlist>
+      <template v-if="currentMenu.id === 1">
+        <div class="my-content-header">
+          <img src="http://p2.music.126.net/64JozXeLm7ErtXpwGrwwEw==/109951162811190850.jpg">
+          <div class="header-info">
+            <h3 class="name">{{currentMenu.name}}</h3>
+          </div>
+        </div>
+        <songlist :songs="plays"></songlist>
+      </template>
+      <template v-if="currentMenu.id === 2">
+        <div class="my-content-header">
+          <img src="http://p2.music.126.net/64JozXeLm7ErtXpwGrwwEw==/109951162811190850.jpg">
+          <div class="header-info">
+            <h3 class="name">{{currentMenu.name}}</h3>
+          </div>
+        </div>
+        <songlist :songs="loves"></songlist>
+      </template>
+
     </div>
   </div>
 </template>
@@ -21,18 +37,21 @@
 <script>
 import db from '@/utils/db';
 import Songlist from '@/pages/playlist/songlist';
+import eventBus from '@/services/event-bus';
 
 export default {
+  name: 'my',
   components: {
     Songlist
   },
   data() {
     return {
       plays: [],
-      currentMenu: 1,
+      loves: [],
+      currentMenu: { name: '我的最近播放', id: 1, icon: 'music' },
       menus: [
-        { name: '播放历史', id: 1 },
-        { name: '我喜欢的音乐', id: 2 },
+        { name: '我的最近播放', id: 1, icon: 'music' },
+        { name: '我喜欢的音乐', id: 2, icon: 'unlove' },
       ]
     };
   },
@@ -40,40 +59,65 @@ export default {
     query() {
       this.getPlayHistory();
     },
-    getPlayHistory() {
-      db.play.find({}, (err, data) => {
-        if (err) {
-          return;
-        }
+    select(menu) {
+      this.currentMenu = menu;
 
+      switch (menu.id) {
+        case 1:
+          this.getPlayHistory();
+          break;
+        case 2:
+          this.getLoves();
+          break;
+        default:
+          break;
+      }
+    },
+    getPlayHistory() {
+      db.play.find({}).sort({ listen_time: -1 }).exec((err, data) => {
         this.plays = data;
+      });
+    },
+    getLoves() {
+      db.love.find({}).sort({ create_time: -1 }).exec((err, data) => {
+        this.loves = data;
       });
     }
   },
   created() {
     this.query();
+    eventBus.$on('love', () => {
+      this.select(this.currentMenu);
+    });
   }
 };
 </script>
 
 <style lang="stylus" scoped>
 .my
-  fixed: top 100px left 50px bottom 100px right 0
-  overflow-y: auto
 
   &-menus
     fixed: top 100px left 50px bottom 100px
     background: hsla(0, 0%, 100%, 0.027)
     width: 220px
     border-radius: 5px
-    cursor: pointer
 
     .menu-item
       line-height: 50px
       padding: 0 10px
       position: relative
       border-bottom-1px(hsla(0, 0%, 100%, 0.062))
+      cursor: pointer
+      display: flex
+      align-items: center
 
+      .icon
+        margin-right: 10px
+
+      .icon-music
+        size: 22px
+        margin: 0 8px 0 -2px
+      
       &.active
         background: hsla(0, 0%, 100%, 0.062)
 
@@ -87,4 +131,9 @@ export default {
       img
         size: 150px
         border-radius: 5px
+      
+      .header-info
+        padding-left: 20px
+        .name
+          font-size: 22px
 </style>

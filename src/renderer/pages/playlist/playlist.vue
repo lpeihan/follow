@@ -53,8 +53,6 @@ export default {
 
 <style lang="stylus" scoped>
 .playlist
-  fixed: top 100px left 50px bottom 100px right 0
-  overflow-y: auto
 
   &-info
     fixed: top 100px left 50px bottom 100px
@@ -79,5 +77,5 @@ export default {
       overflow: auto
   
   .songlist
-    margin: 0 50px 0 270px
+    margin-left: 270px
 </style>

@@ -25,7 +25,13 @@ export default {
 
 <style lang="stylus">
 #app
-  padding: 80px 50px 0
+  height: 100%
+  flex-direction: column
+
+  .child-view
+    padding: 0 50px
+    height: calc(100% - 200px)
+    overflow: auto
 
   .router-link-active
     color: $color-theme

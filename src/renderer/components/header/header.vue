@@ -46,9 +46,9 @@ export default {
 
 <style lang="stylus" scoped>
 .header
-  fixed: top left 50px right 50px
   z-index: 100
-  height: 80px
+  height: 100px
+  padding: 0 50px
   background: linear-gradient(90deg, $color-bg, $color-sub-bg)
   user-select: none
 
@@ -57,7 +57,7 @@ export default {
     -webkit-app-region: drag
 
   &-content
-    height: 50px
+    height: 70px
     display: flex
     align-items: center
 

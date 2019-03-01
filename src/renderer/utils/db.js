@@ -14,4 +14,7 @@ const db = {};
 db.play = createDB('play');
 db.love = createDB('love');
 
+db.play.ensureIndex({ fieldName: 'listen_time' });
+db.love.ensureIndex({ fieldName: 'create_time' });
+
 export default db;
