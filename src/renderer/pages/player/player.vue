@@ -25,7 +25,7 @@
       <div class="icons">
         <icon :name="isLove ? 'love' : 'unlove'" @click="love"></icon>
         <icon name="repeat"></icon>
-        <icon name="menu"></icon>
+        <icon name="menu" @click="showCurrentPlaylist"></icon>
       </div>
 
       <div class="volume-progress">
@@ -33,6 +33,8 @@
         <progress-bar @update="changeVolume" :percent="initialVolume"></progress-bar>
       </div>
     </div>
+
+    <current-playlist ref="currentPlaylist"></current-playlist>
 
     <audio ref="audio" :src="url" autoplay @timeupdate="updateTime" @ended="ended"></audio>
   </div>
@@ -46,10 +48,12 @@ import { leftpad } from '@/utils';
 import Storage from '@/utils/storage';
 import db from '@/utils/db';
 import eventBus from '@/services/event-bus';
+import CurrentPlaylist from './current-playlist';
 
 export default {
   components: {
-    ProgressBar
+    ProgressBar,
+    CurrentPlaylist
   },
   data() {
     return {
@@ -138,6 +142,9 @@ export default {
       db.love.findOne({ id: this.currentSong.id }, (err, data) => {
         this.isLove = Boolean(data);
       });
+    },
+    showCurrentPlaylist() {
+      this.$refs.currentPlaylist.open();
     }
   },
   filters: {
