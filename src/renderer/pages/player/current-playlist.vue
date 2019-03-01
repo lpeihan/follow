@@ -48,7 +48,7 @@ export default {
     fixed: right top bottom
     width: 300px
     background: $black
-    z-index: 2
+    z-index: 12
     padding: 10px 0
     overflow: auto
 

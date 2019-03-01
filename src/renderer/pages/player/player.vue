@@ -7,7 +7,7 @@
     </div>
 
     <div class="player-progress">
-      <img :src="currentSong.pic" class="pic">
+      <img :src="currentSong.pic" class="pic" @click="toggleLyric">
 
       <div class="progress">
         <div class="song-info">
@@ -36,25 +36,53 @@
 
     <current-playlist ref="currentPlaylist"></current-playlist>
 
+    <transition name="fade">
+      <div class="lyric" v-show="showLyric">
+        <icon name="delete" @click="toggleLyric"></icon>
+        <div class="lyric-left">
+          <img :src="currentSong.pic" class="lyric-img">
+        </div>
+        <div class="lyric-right">
+
+          <scroll class="lyric-box" ref="scroll" :data="lyric" :wheel="true" v-if="lyric">
+            <div>
+              <p
+                ref="line"
+                :class="{ 'active': index === currentLineNum }"
+                v-for="(line, index) in lyric.lines"
+                :key="index"
+                class="lyric-line">
+                {{line.txt}}
+              </p>
+            </div>
+          </scroll>
+
+        </div>
+      </div>
+    </transition>
+
     <audio ref="audio" :src="url" autoplay @timeupdate="updateTime" @ended="ended"></audio>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapMutations } from 'vuex';
-import { getSong } from '@/api/song';
+import { getSong, getLyric } from '@/api/song';
 import ProgressBar from '@/components/progress/progress';
 import { leftpad } from '@/utils';
 import Storage from '@/utils/storage';
 import db from '@/utils/db';
 import eventBus from '@/services/event-bus';
+import LyricParser from 'lyric-parser';
 import { mode } from '@/services/config';
+import Scroll from '@/components/scroll/scroll';
 import CurrentPlaylist from './current-playlist';
 
 export default {
   components: {
     ProgressBar,
-    CurrentPlaylist
+    CurrentPlaylist,
+    Scroll
   },
   data() {
     return {
@@ -62,6 +90,9 @@ export default {
       currentTime: 0,
       duration: 0,
       isLove: false,
+      showLyric: false,
+      lyric: null,
+      currentLineNum: 0,
       initialVolume: Storage.getItem('Volume') || 1
     };
   },
@@ -86,8 +117,28 @@ export default {
           return;
         }
 
-        this.duration = this.$refs.audio.duration;
+        this.duration = this.$refs.audio && this.$refs.audio.duration;
       }, 300);
+    },
+    async getLyric(id) {
+      const res = await getLyric(id);
+      this.lyric = new LyricParser(res.lrc.lyric, this.handleLyric);
+
+      this.playing && this.url && this.lyric.play();
+    },
+    handleLyric({ lineNum, txt }) {
+      this.currentLineNum = lineNum;
+
+      if (lineNum > 5) {
+        const line = this.$refs.line[lineNum - 5];
+        this.$refs.scroll.scrollToElement(line, 1000);
+      } else {
+        this.$refs.scroll.scrollTo(0, 0, 1000);
+      }
+      console.log(txt);
+    },
+    toggleLyric() {
+      this.showLyric = !this.showLyric;
     },
     prev() {
       let index = this.currentIndex - 1;
@@ -114,6 +165,8 @@ export default {
       this.$refs.audio.currentTime = percent * this.duration;
 
       !this.playing && this.togglePlay();
+
+      this.lyric && this.lyric.seek(this.$refs.audio.currentTime * 1000);
     },
     updateTime(e) {
       this.currentTime = e.target.currentTime;
@@ -154,7 +207,7 @@ export default {
     changeMode() {
       const m = (this.currentMode + 1) % 3;
       this.SET_CURRENT_MODE(m);
-    },
+    }
   },
   filters: {
     time(time) {
@@ -171,25 +224,24 @@ export default {
       this.duration = 0;
       this.currentTime = 0;
       this.url = '';
+      this.lyric && this.lyric.stop();
 
       db.play.update({ id: newVal.id }, { $set: { listen_time: Date.now() } }, (err, data) => {
         if (data === 0) {
           const time = Date.now();
-          db.play.insert(Object.assign(newVal, {
-            create_time: time, listen_time: time
-          }), (err, res) => {
-            console.log(res);
-          });
+          db.play.insert(Object.assign(newVal, { create_time: time, listen_time: time }));
         }
       });
 
       this.checkIsLove();
 
       await this.getSong(newVal.id);
+      await this.getLyric(newVal.id);
     },
-    playing(val) {
+    async playing(val) {
       if (!this.url) {
-        this.getSong(this.currentSong.id);
+        await this.getSong(this.currentSong.id);
+        await this.getLyric(this.currentSong.id);
         return;
       }
 
@@ -237,6 +289,7 @@ export default {
     .pic
       width: 68px
       border-radius: 5px
+      cursor: pointer
 
     .progress
       flex: 1
@@ -273,5 +326,51 @@ export default {
 
       .icon-volume
         margin-right: 10px
+
+  .lyric
+    fixed: top left right bottom 100px
+    z-index: 10
+    padding: 50px 100px
+    transition: all $transition-time
+    background: rgba($color-bg, 0.96)
+    display: flex
+
+    &.fade-enter
+    &.fade-leave-to
+      opacity: 0
+
+    .icon-delete
+      absolute: right 100px top 70px
+      size: 32px
+      cursor: pointer
+
+    &-left
+      display: flex
+      width: 30%
+      justify-content: center
+      align-items: center
+
+      .lyric-img
+        width: 180px
+        border-radius: 10px
+    
+    &-right
+      display: flex
+      flex: 1
+      justify-content: center
+      align-items: center
+
+      .lyric-box
+        size: 320px 360px
+        text-align: center
+        overflow: hidden
+        position: relative
+
+        .lyric-line
+          line-height: 36px
+          color: $color-text-l
+
+          &.active
+            color: white
 </style>
 
