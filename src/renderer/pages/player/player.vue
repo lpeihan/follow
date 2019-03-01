@@ -23,8 +23,8 @@
 
     <div class="player-right">
       <div class="icons">
+        <icon :name="modeName" @click="changeMode"></icon>
         <icon :name="isLove ? 'love' : 'unlove'" @click="love"></icon>
-        <icon name="repeat"></icon>
         <icon name="menu" @click="showCurrentPlaylist"></icon>
       </div>
 
@@ -48,6 +48,7 @@ import { leftpad } from '@/utils';
 import Storage from '@/utils/storage';
 import db from '@/utils/db';
 import eventBus from '@/services/event-bus';
+import { mode } from '@/services/config';
 import CurrentPlaylist from './current-playlist';
 
 export default {
@@ -65,13 +66,17 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('song', ['currentSong', 'currentIndex', 'playlist', 'playing']),
+    ...mapGetters('song', ['currentSong', 'currentIndex', 'playlist', 'playing', 'currentMode']),
     percent() {
       return this.duration ? this.currentTime / this.duration : 0;
+    },
+    modeName() {
+      return this.currentMode === mode.loop ? 'loop' :
+        this.currentMode === mode.random ? 'random' : 'once';
     }
   },
   methods: {
-    ...mapMutations('song', ['SET_CURRENT_INDEX', 'SET_PLAYING']),
+    ...mapMutations('song', ['SET_CURRENT_INDEX', 'SET_PLAYING', 'SET_CURRENT_MODE']),
     async getSong(id) {
       this.url = (await getSong(id)).data[0].url;
 
@@ -145,7 +150,11 @@ export default {
     },
     showCurrentPlaylist() {
       this.$refs.currentPlaylist.open();
-    }
+    },
+    changeMode() {
+      const m = (this.currentMode + 1) % 3;
+      this.SET_CURRENT_MODE(m);
+    },
   },
   filters: {
     time(time) {
@@ -204,6 +213,7 @@ export default {
   background: linear-gradient(90deg, $color-bg, $color-sub-bg)
   align-items: center
   padding: 0 50px
+
   &-ctrl
     display: flex
     align-items: center

@@ -25,6 +25,11 @@ export default new Router({
       component: require('@/pages/ranking/ranking').default
     },
     {
+      path: '/ranking/:id',
+      name: 'rankingDetails',
+      component: require('@/pages/playlist/playlist').default
+    },
+    {
       path: '/search',
       name: 'search',
       component: require('@/pages/search/search').default

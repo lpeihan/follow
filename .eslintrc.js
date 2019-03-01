@@ -34,6 +34,7 @@ module.exports = {
     'no-mixed-operators': 0,
     'no-bitwise': 0,
     'no-plusplus': 0,
+    'no-nested-ternary': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }

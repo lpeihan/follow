@@ -1,11 +1,16 @@
+import { mode } from '@/services/config';
+
 const SET_PLAYLIST = 'SET_PLAYLIST';
 const SET_CURRENT_INDEX = 'SET_CURRENT_INDEX';
 const SET_PLAYING = 'SET_PLAYING';
+const SET_CURRENT_MODE = 'SET_CURRENT_MODE';
+
 
 const state = {
   playlist: [],
   currentIndex: 0,
-  playing: false
+  playing: false,
+  currentMode: mode.loop
 };
 
 const getters = {
@@ -13,6 +18,7 @@ const getters = {
   currentIndex: state => state.currentIndex,
   playing: state => state.playing,
   currentSong: state => state.playlist[state.currentIndex] || {},
+  currentMode: state => state.currentMode,
 };
 
 const mutations = {
@@ -24,6 +30,9 @@ const mutations = {
   },
   [SET_PLAYING](state, status) {
     state.playing = status;
+  },
+  [SET_CURRENT_MODE](state, mode) {
+    state.currentMode = mode;
   }
 };
 

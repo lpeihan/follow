@@ -13,9 +13,13 @@
     <div class="my-content">
       <template v-if="currentMenu.id === 1">
         <div class="my-content-header">
-          <img src="http://p2.music.126.net/64JozXeLm7ErtXpwGrwwEw==/109951162811190850.jpg">
+          <img src="http://p1.music.126.net/B6qfDeEhaeqTbKd1zhQnWg==/109951163885799892.jpg">
           <div class="header-info">
             <h3 class="name">{{currentMenu.name}}</h3>
+
+            <div class="song-count">
+              共{{plays.length}}首
+            </div>
           </div>
         </div>
         <songlist :songs="plays"></songlist>
@@ -25,6 +29,9 @@
           <img src="http://p2.music.126.net/64JozXeLm7ErtXpwGrwwEw==/109951162811190850.jpg">
           <div class="header-info">
             <h3 class="name">{{currentMenu.name}}</h3>
+            <div class="song-count">
+              共{{plays.length}}首
+            </div>
           </div>
         </div>
         <songlist :songs="loves"></songlist>
@@ -136,4 +143,8 @@ export default {
         padding-left: 20px
         .name
           font-size: 22px
+        
+        .song-count
+          margin-top: 10px
+          color: $color-text-l
 </style>
