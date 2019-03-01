@@ -38,11 +38,16 @@ export default {
       this.getPlaylist(this.$route.params.id);
     },
     async getPlaylist(id) {
-      loading.open();
-      const res = await getPlaylist(id);
-      loading.close();
-      this.playlistData = res.playlist;
-      this.songs = res.playlist.tracks.map(song => createSong(song));
+      try {
+        loading.open();
+        const res = await getPlaylist(id);
+        loading.close();
+        this.playlistData = res.playlist;
+        this.songs = res.playlist.tracks.map(song => createSong(song));
+      } catch (err) {
+        console.log(err);
+        loading.close();
+      }
     }
   },
   created() {

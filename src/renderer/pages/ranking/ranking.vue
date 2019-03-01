@@ -25,6 +25,8 @@
 
 <script>
 import { getRanking } from '@/api/ranking';
+import loading from '@/components/loading';
+import { refreshMixins } from '@/services/mixins';
 export default {
   name: 'ranking',
   data() {
@@ -32,9 +34,15 @@ export default {
       rankings: []
     };
   },
+  mixins: [refreshMixins],
   methods: {
+    query() {
+      this.getRanking();
+    },
     async getRanking() {
+      loading.open();
       const res = await getRanking();
+      loading.close();
       this.rankings = res.list;
     },
     select(id) {
@@ -42,7 +50,7 @@ export default {
     }
   },
   created() {
-    this.getRanking();
+    this.query();
   }
 };
 </script>
