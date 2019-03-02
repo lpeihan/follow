@@ -4,7 +4,8 @@
 
     <div class="header-content">
       <div class="icons">
-        <icon name="music" @click="$router.push('/')"></icon>
+        <img src="@/assets/imgs/logo.png" width="80" class="logo" @click="$router.push('/')">
+        <!-- <icon name="music" @click="$router.push('/')"></icon> -->
         <icon name="refresh" @click="refresh"></icon>
         <icon name="back" @click="$router.go(-1)"></icon>
         <icon name="right" @click="$router.go(1)"></icon>
@@ -65,6 +66,12 @@ export default {
       flex: 1
       display: flex
       align-items: center
+
+      .logo
+        margin-right: 10px
+        cursor: pointer
+        &:hover
+          color: $color-theme
 
       .icon
         cursor: pointer
