@@ -1,6 +1,6 @@
 # follow-music
 
-> An electron-vue project
+> Follow Music 一个使用 vue-electron 开发的桌面音乐客户端
 
 **Follow Music** 是基于 [Binaryify/NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) 提供的网易云音乐 API ，使用 vue-electron、vue、vuex、nedb 开发的一款网易云音乐第三方。
 
