@@ -37,6 +37,7 @@ module.exports = {
     'no-nested-ternary': 0,
     'prefer-spread': 0,
     'prefer-rest-params': 0,
+    'func-names': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }
