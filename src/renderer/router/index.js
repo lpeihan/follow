@@ -35,6 +35,16 @@ export default new Router({
       component: require('@/pages/search/search').default
     },
     {
+      path: '/search/music/:id',
+      name: 'searchMusic',
+      component: require('@/pages/playlist/playlist').default
+    },
+    {
+      path: '/search/singer/:id',
+      name: 'searchSinger',
+      component: require('@/pages/playlist/playlist').default
+    },
+    {
       path: '/my',
       name: 'my',
       component: require('@/pages/my/my').default

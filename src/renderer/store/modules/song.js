@@ -41,6 +41,13 @@ const actions = {
     commit(SET_PLAYLIST, songs);
     commit(SET_CURRENT_INDEX, index);
     commit(SET_PLAYING, true);
+  },
+  insertSong({ state, commit }, song) {
+    const playlist = state.playlist.slice();
+    playlist.unshift(song);
+
+    commit(SET_CURRENT_INDEX, 0);
+    commit(SET_PLAYLIST, playlist);
   }
 };
 

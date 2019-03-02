@@ -37,7 +37,7 @@
       >{{hot.first}}</li>
     </ul>
 
-    <div class="search-results">
+    <div class="search-results" v-if="singers.length || songs.length || musiclist.length">
       <div class="search-bar">
         <div
           class="search-bar-item"
@@ -47,6 +47,27 @@
           :class="{ 'active': currentBar === bar }"
         >{{bar}}</div>
       </div>
+
+      <ul v-if="currentBar === '歌曲'">
+        <li class="song-item" v-for="song in songs" :key="song.id" @click="selectSong(song)">
+          <span class="name">{{song.name}}</span>
+          <span class="singer-name">{{song.singer}}</span>
+        </li>
+      </ul>
+
+      <ul v-if="currentBar === '歌手'">
+        <li class="singer-item" v-for="singer in singers" :key="singer.id" @click="selectSinger(singer)">
+          <img :src="singer.picUrl" width="100%">
+          <p class="singer-name">{{singer.name}}</p>
+        </li>
+      </ul>
+
+      <ul v-if="currentBar === '歌单'">
+        <li class="musiclist-item" v-for="music in musiclist" :key="music.id" @click="selectMusiclist(music)">
+          <img :src="music.coverImgUrl" width="100%">
+          <p class="singer-name">{{music.name}}</p>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -55,6 +76,8 @@
 import { getSearchHot, getSearchSuggest, getSearchSinger, getSearchSongs, getSearchMusicList } from '@/api/search';
 import { debounce } from '@/utils';
 import loading from '@/components/loading';
+import { createSearchSong } from '@/services/song';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'search',
@@ -72,6 +95,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions('song', ['insertSong']),
     async getSearchHot() {
       const res = await getSearchHot();
 
@@ -129,13 +153,21 @@ export default {
     },
     async getSearchSongs() {
       const res = await getSearchSongs({ keywords: this.search });
-      this.songs = res.result.songs;
-      console.log(this.songs);
+      this.songs = res.result.songs.map(item => createSearchSong(item));
     },
     async getSearchMusicList() {
       const res = await getSearchMusicList({ keywords: this.search });
       this.musiclist = res.result.playlists;
       console.log(this.musiclist);
+    },
+    selectSong(song) {
+      this.insertSong(song);
+    },
+    selectMusiclist(music) {
+      this.$router.push(`/search/music/${music.id}`);
+    },
+    selectSinger(singer) {
+      this.$router.push(`/search/singer/${singer.id}`);
     }
   },
   activated() {
@@ -148,7 +180,7 @@ export default {
 
 <style lang="stylus" scoped>
 .search
-  padding: 20px 150px !important
+  padding: 10px 150px !important
 
   .input-box
     position: relative
@@ -224,4 +256,47 @@ export default {
 
         &.active
           color: $color-theme
+
+    ul
+      font-size: 0
+
+      &:nth-child(2)
+        padding-top: 20px
+
+    .song-item
+      position: relative
+      padding: 15px 0
+      font-size: 14px
+      border-bottom-1px(hsla(0, 0%, 100%, 0.062))
+      cursor: pointer
+
+      &:hover
+        background: $color-hover
+
+      .singer-name
+        margin-left: 10px
+        font-size: 13px
+        color: $color-text-l
+
+    .singer-item
+    .musiclist-item
+      display: inline-block
+      width: calc(20% - 20px)
+      margin-right: 25px
+      margin-bottom: 20px
+      font-size: 14px
+      vertical-align: top
+      cursor: pointer
+
+      &:nth-child(5n)
+        margin-right: 0
+
+      &:hover
+        color: $color-theme
+
+      img
+        border-radius: 5px
+
+      .singer-name
+        margin: 10px 0
 </style>
