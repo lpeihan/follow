@@ -110,7 +110,8 @@ export default {
 
       const { albums, artists, playlists, songs, mvs } = res.result;
 
-      this.suggests = (artists || []).concat(songs || [], playlists || [], albums || [], mvs || []);
+      this.suggests =
+        (artists || []).concat(songs || [], playlists || [], albums || [], mvs || []).slice(0, 10);
     },
     submit(e) {
       e.preventDefault();
@@ -171,8 +172,8 @@ export default {
     }
   },
   activated() {
-    this.$refs.input.focus();
-    this.isFocus = true;
+    // this.$refs.input.focus();
+    // this.isFocus = true;
     this.getSearchHot();
   }
 };
