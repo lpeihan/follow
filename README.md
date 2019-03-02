@@ -6,7 +6,7 @@
 
 特点是好看、简约、优雅、易用。目前发布了第一个版本，已经可以支撑日常的使用。
 
-## 下载地址
+[下载地址](https://github.com/lpeihan/follow/releases/download/v1.0.0/follow-1.0.0.dmg)
 
 ## 支持功能
 
